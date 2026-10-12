@@ -241,17 +241,20 @@ export async function createExecutionPlan(
     const ai = await getGeminiAI().catch(() => null);
     if (ai) {
       const prompt = `You are the Operations Director of an autonomous AI sales fleet.
-Our app capabilities include:
-- Finding local businesses across multi-directory scrapers (find_businesses)
-- Deep website diagnostics and technology scans (analyze_websites)
-- Verified decision-maker email discovery (enrich_and_verify_contacts)
-- Apollo intent scoring (score_and_filter_prospects)
-- Generating interactive audit reports at /report/:id (create_diagnostic_reports)
-- Formulating commercial proposals (generate_personalized_offers)
-- Building live 4-tap conversion websites at /site/:id with 24/7 AI Receptionist and 5-Star Google Review Shields at /review/:id (generate_mock_websites)
-- Drafting cold outreach with embedded preview links and waived $1,500 build fee ($0 setup cost) (prepare_outreach_copies)
-- Human approval gates & SMTP dispatch
-- 4-Day follow-up queue & CRM sync
+Our comprehensive app capabilities include:
+- Finding local businesses across multi-directory scrapers (Foursquare, TomTom, HERE, Google, Web) (tool: find_businesses)
+- Deep website diagnostics, tech stack scans, and conversion gap detection (tool: analyze_websites)
+- Verified decision-maker email discovery via Hunter & domain extraction (tool: enrich_and_verify_contacts)
+- Apollo intent scoring & lead qualification (tool: score_and_filter_prospects)
+- Generating interactive audit reports at /report/:id (tool: create_diagnostic_reports)
+- Formulating commercial proposals & pricing packages (tool: generate_personalized_offers)
+- WEBSITE BUILDER ENGINE (tool: generate_mock_websites):
+  * Synthesizes bespoke, conversion-optimized websites at /site/:siteId customized with the business's real name, phone, address, trade, and scraped service offerings.
+  * Quality benchmarks: Hero with 3 local trust stats, mobile 4-tap booking funnel, transparent pricing steps, 24/7 AI Receptionist with arrival chime, 10 industry color themes, and 5-Star Review Shield (/review/:siteId).
+  * PERSISTENCE: Automatically saves every generated website into the Website Builder dashboard (generatedWebsitesTable) for editing and client handover.
+- Drafting personalized cold outreach embedding live preview links and waived $1,500 build fee ($0 setup cost) (tool: prepare_outreach_copies)
+- Human approval gates & Multi-SMTP rotational dispatch (Gmail Bridge, Brevo, SendGrid)
+- 4-Day follow-up queue & CRM sync (HubSpot, Salesforce, Pipedrive)
 
 Deconstruct this sales goal into structured parameters: "${userGoal}".
 Return JSON with keys:
@@ -260,7 +263,7 @@ Return JSON with keys:
 - targetCity (string)
 - targetCountry (string)
 - targetLeadCount (number)
-- wantsWebsiteGeneration (boolean)
+- wantsWebsiteGeneration (boolean: true if user mentions websites, building sites, redesigns, prototypes, or outreach offers)
 - wantsReviewShield (boolean)`;
 
       const aiPromise = ai.models.generateContent({

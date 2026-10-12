@@ -600,6 +600,7 @@ export async function runExecutionLoop(runId: number, userEmail?: string) {
             for (const lead of leads) {
               if (!lead) continue;
               const bName = lead.businessName || "Valued Business";
+              const intel = runState.analyzedWebsites[bName];
               try {
                 const siteRes = await websiteTool.execute({
                   businessName: bName,
@@ -611,8 +612,22 @@ export async function runExecutionLoop(runId: number, userEmail?: string) {
                   email: lead.email || "",
                   originalWebsite: lead.website || "",
                   address: lead.address || "",
+                  scrapedIntel: intel,
+                  prospectId: lead.prospectId || (lead as any).id,
                 }, toolCtx);
                 runState.generatedWebsites[bName] = siteRes;
+                await logEmployeeEvent(
+                  runId,
+                  "info",
+                  `Website Builder: Site Generated (${bName})`,
+                  `Bespoke 4-tap conversion website saved to Website Builder at ${siteRes.siteUrl} with 5-Star Review Shield at ${siteRes.reviewUrl}`,
+                  {
+                    siteId: siteRes.siteId,
+                    siteUrl: siteRes.siteUrl,
+                    reviewUrl: siteRes.reviewUrl,
+                    businessName: bName,
+                  }
+                );
               } catch (err: any) {
                 console.warn(`[executor] Website generation notice for ${bName}:`, err.message);
               }

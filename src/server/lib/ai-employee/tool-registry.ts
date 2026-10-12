@@ -426,6 +426,7 @@ Return ONLY valid JSON in format:
         originalWebsite: hasNoSite ? "" : effectiveWeb,
         address: address || bObj.address || `${effectiveCity}, ${effectiveCountry}`,
         detectionStatus: hasNoSite ? "no_website" : "upgrade_ready",
+        scrapedIntel: input?.scrapedIntel || bObj.scrapedIntel,
       };
 
       const baseBlueprint = buildAccurateBusinessBlueprint(blueprintInput);
@@ -458,8 +459,11 @@ Return ONLY valid JSON in format:
         servicesSummary: (synthesized.funnelConfig?.step1Options || []).map((o: any) => o.label).slice(0, 3).join(", "),
       });
 
+      const prospectId = String(input?.prospectId || bObj.prospectId || bObj.id || "").trim();
+
       const siteRecord = {
         siteId,
+        prospectId,
         businessName: effectiveBiz,
         ownerName: effectiveOwner,
         category: effectiveCategory,
@@ -481,6 +485,24 @@ Return ONLY valid JSON in format:
       };
 
       await db.insert(generatedWebsitesTable).values(siteRecord).catch(() => {});
+
+      // Link mock website url into CRM prospect payload if prospect ID was provided
+      if (prospectId) {
+        try {
+          await db
+            .update(crmProspectsTable)
+            .set({
+              payload: {
+                mockWebsiteUrl: siteUrl,
+                reviewShieldUrl: reviewUrl,
+                siteId,
+              },
+              updatedAt: new Date(),
+            })
+            .where(eq(crmProspectsTable.id, prospectId))
+            .catch(() => {});
+        } catch {}
+      }
 
       // Seed immediately into Website Builder persistent memory & disk store so it appears in Website Builder UI
       try {

@@ -49,11 +49,11 @@ function tokenConfigKey(token: string): string {
 export const DEFAULT_SERVICES_OFFERED: TrainedServiceOffer[] = [
   {
     id: "offer_1",
-    name: "Free Conversion Website Prototype & 4-Tap Funnel Upgrade",
+    name: "Bespoke Conversion Website & 4-Tap Funnel Upgrade ($0 Build Fee)",
     description:
-      "Live interactive mobile-ready website synthesized specifically for their trade at /site/:siteId with a 4-tap instant quote/estimate funnel, transparent 4-step customer process, and 24/7 automated website chatbot. We waive the entire $1,500 build fee so they can test-drive and claim it for FREE ($0 upfront build cost).",
+      "Synthesizes a live, conversion-engineered website at /site/:siteId tailored to the business's exact trade, city, phone, and services. Features 10 industry color palettes, curated trade photography, mobile 4-tap instant quote/estimate funnel, transparent 4-step customer process, and 24/7 AI Receptionist with audible arrival chime. We waive the $1,500 build fee so clients can test-drive for FREE ($0 upfront cost). All sites are persistently saved in the Website Builder dashboard.",
     targetSignals:
-      "Pitch when the business has no website, an outdated/slow website, poor mobile layout, missing instant quote form, or when pitching a high-converting free website upgrade.",
+      "Pitch when the business has no website, an outdated/slow website, poor mobile layout, missing online quote/booking form, or when pitching a high-converting free website upgrade.",
   },
   {
     id: "offer_2",
@@ -99,7 +99,7 @@ export function getDefaultTrainingProfile(user?: {
     senderEmail,
     servicesOffered: DEFAULT_SERVICES_OFFERED,
     offerDetails:
-      "We help local and B2B businesses capture more high-intent customers by synthesizing free high-converting website prototypes with 4-tap instant quote funnels, activating 5-Star Google Review Shields, and providing 24/7 automated AI receptionists.",
+      "We operate an autonomous B2B growth and website synthesis fleet. We discover local businesses across multi-directory scrapers, audit their digital presence, synthesize bespoke conversion-ready websites in our Website Builder (/site/:siteId) with 4-tap booking funnels and 24/7 AI Receptionists, activate 5-Star Review Shields (/review/:siteId), and reach out with waived $1,500 build fees ($0 setup cost). Every website is saved persistently in the Website Builder for live editing, customization, and client handover.",
     targetPainPoints:
       "No website or outdated slow website, no mobile instant booking/quote funnel, losing customer calls after hours, and getting fewer 5-star Google reviews than competitors.",
     staticEmailExample: `Hi {{BusinessName}} Team,
@@ -131,8 +131,17 @@ Best regards,
 ${senderName}
 ${businessName}`,
     subjectLineGuide: "We built a free website preview for {{BusinessName}} in {{City}}",
-    aiInstructions:
-      "Analyze each scraped business against our core offers (Free Website Prototype, 5-Star Review Shield, 24/7 AI Receptionist). When generating outreach, automatically incorporate the live preview website link and 5-Star Review Shield link matching our free website pitch (waived $1,500 build fee / $0 setup cost), keep it under 150 words, and sign off with my name and business.",
+    aiInstructions: `WEBSITE BUILDER MASTER INSTRUCTIONS FOR AI EMPLOYEES:
+1. WEBSITE QUALITY BENCHMARK: Every synthesized website must be a high-conversion, production-grade site tailored to the business's exact industry, category, city, phone, address, and scraped services.
+2. ESSENTIAL WEBSITE MODULES:
+   - Hero Section: Punchy, non-generic headline with primary 4-tap quote CTA and 3 local proof badges.
+   - Mobile 4-Tap Funnel: Custom multi-step quote selector (e.g., Service Selection -> Property Type -> Urgency -> Contact Info) with transparent pricing ranges.
+   - 24/7 AI Receptionist: Web chat assistant with chime sound, answering questions specifically for the business's trade.
+   - 5-Star Review Shield: Funnel at /review/:siteId capturing positive Google reviews and quarantining negative feedback.
+   - Color Palette Harmony: Assign one of 10 distinct industry color themes (never use the same theme for all sites).
+   - High-Res Curated Visuals: Use specific showcase imagery matching their exact trade (e.g. plumbing, HVAC, dental, salon, restaurant, auto, roofing).
+3. PERSISTENT STORAGE: Every generated website MUST be saved immediately to the generatedWebsitesTable and persistent disk store so it displays in the Website Builder dashboard.
+4. OUTREACH INTEGRATION: When pitching prospects with emails, embed the live preview link ({{SiteUrl}}) and review link ({{ReviewUrl}}), framing the pitch around our waived $1,500 build fee ($0 setup cost). Only draft to verified real email addresses.`,
     tone: "conversational",
     callToAction: "Click your live preview link above to test it out—would you like to claim this design for $0?",
     includeAuditReportLink: true,
