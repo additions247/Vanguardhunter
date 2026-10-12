@@ -651,7 +651,28 @@ export async function runExecutionLoop(runId: number, userEmail?: string) {
                 batch.map(async (lead) => {
                   if (!lead) return null;
                   const bName = lead.businessName || "Valued Business";
+
+                  // Resolve email: use lead email or any extracted email from website intelligence
+                  let targetEmail = String(lead.email || "").trim();
                   const intel = runState.analyzedWebsites[bName];
+                  if ((!targetEmail || targetEmail.includes("example.com")) && intel) {
+                    const extracted = (intel as any).extractedEmails || (intel as any).emails || [];
+                    if (Array.isArray(extracted) && extracted.length > 0) {
+                      targetEmail = String(extracted[0]).trim();
+                    }
+                  }
+
+                  // Strict filter: If no valid real email is discovered, skip drafting to protect deliverability
+                  if (!targetEmail || !targetEmail.includes("@") || targetEmail.toLowerCase().includes("example.com")) {
+                    await logEmployeeEvent(
+                      runId,
+                      "info",
+                      `Outreach Draft Skipped (${bName})`,
+                      `No public email address discovered for ${bName}. Skipping draft to protect domain reputation and prevent bounces.`
+                    );
+                    return null;
+                  }
+
                   const report = runState.reports[bName];
                   const offer = runState.offers[bName];
 
@@ -666,7 +687,7 @@ export async function runExecutionLoop(runId: number, userEmail?: string) {
                         city: lead.city || "Austin",
                         country: lead.country || "USA",
                         phone: lead.phone || "",
-                        email: lead.email || "",
+                        email: targetEmail,
                         originalWebsite: lead.website || "",
                         address: lead.address || "",
                       }, toolCtx);
@@ -695,7 +716,7 @@ export async function runExecutionLoop(runId: number, userEmail?: string) {
 
                     return {
                       businessName: bName,
-                      to: lead.email || "prospect@example.com",
+                      to: targetEmail,
                       subject: emailCopy.subject,
                       bodyText: emailCopy.bodyText,
                       html: emailCopy.html,
@@ -713,7 +734,7 @@ export async function runExecutionLoop(runId: number, userEmail?: string) {
 
                     return {
                       businessName: bName,
-                      to: lead.email || "prospect@example.com",
+                      to: targetEmail,
                       subject: fallbackSubj,
                       bodyText: fallbackBody,
                       html: `<p style="line-height:1.6;font-size:15px;color:#1e293b;">${fallbackBody.replace(/\n/g, "<br/>")}</p>`,

@@ -407,8 +407,8 @@ Return ONLY valid JSON in format:
       const effectiveCategory = String(category || bObj.category || bObj.industry || "Home Services").trim();
       const effectiveCity = String(city || bObj.city || "Austin").trim();
       const effectiveCountry = String(country || bObj.country || "USA").trim();
-      const effectivePhone = String(phone || bObj.phone || "+1 (555) 234-5678").trim();
-      const effectiveEmail = String(email || bObj.email || "contact@example.com").trim();
+      const effectivePhone = String(phone || bObj.phone || "").trim();
+      const effectiveEmail = String(email || bObj.email || "").trim();
       const effectiveOwner = String(ownerName || bObj.ownerName || "").trim();
       const effectiveWeb = String(originalWebsite || bObj.website || "").trim();
       const hasNoSite = !effectiveWeb || /^(none|n\/a|no website|-|null)$/i.test(effectiveWeb);
